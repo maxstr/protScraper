@@ -9,12 +9,12 @@ import re
 def uniprotFromGeneID(geneID):
     html = requests.get("http://www.ncbi.nlm.nih.gov/gene/" + str(geneID))
     bs = BeautifulSoup(html.text, 'lxml')
-    search = bs.find_all("a", href=re.compile("http://www.uniprot.org/entry/*"))
-    uniprot = None if len(search) < 2 else search[1].text
-    return uniprot
+    search = bs.find_all(id="proteinTblId")[1].tbody.tr.find("a", href=re.compile("http://www.uniprot.org/entry/*")).get("href")
+    uniprotURL = None if not search else search
+    return uniprotURL
 
-def relatedStructuresFromUniprot(uniprotID):
-    html = requests.get("http://www.uniprot.org/uniprot/" + str(uniprotID))
+def relatedStructuresFromUniprot(uniprotURL):
+    html = requests.get(uniprotURL)
     bs = BeautifulSoup(html.text, 'lxml')
     table = next(bs.find_all(class_="databaseTable STRUCTURE")[0].children).find_all("td")[1].table
     rows = table.find_all("tr")
