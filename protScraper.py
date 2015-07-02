@@ -42,7 +42,7 @@ def main(argv):
             for i in relatedStructures:
                 for j in i['chain'].split("/"):
                     try:
-                        f.write(i['entry'] + ":" + j + "\n")
+                        f.write(i['entry'].lower() + ":" + j + "\n")
                     except:
                         pass
     except:
