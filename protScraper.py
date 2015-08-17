@@ -35,6 +35,14 @@ def relatedStructuresFromUniprot(uniprotURL):
         ret.append(dict(zip(columns, i)))
     return ret
 
+def numProteinInteractions(uniprotID):
+    html = requests.get("http://www.uniprot.org/uniprot/%s" % uniprotID)
+    bs = BeautifulSoup(html.text, 'lxml')
+    # Ask at your own risk.
+    return int(bs.find_all(class_="databaseTable INTERACTION")[0].tr.find_all('td')[1].text.split('.')[1].strip().split(' ')[0])
+
+
+
 def main(argv):
     try:
         with open(path.abspath(path.join(argv[1], "a.txt")), 'w') as f:
